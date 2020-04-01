@@ -34,7 +34,7 @@ public class SignalAnalytics {
   Logger logger = LoggerFactory.getLogger(SignalAnalytics.class);
 
   /**
-   * Gets all the latest notifications.
+   * Get all the latest notifications.
    *
    * @return APIResponse
    * @throws Exception
@@ -114,7 +114,7 @@ public class SignalAnalytics {
   }
 
   /**
-   * Route to get the technical Indicators for a symbol.
+   * Route to get the technical indicators for a symbol.
    *
    * @param symbol
    * @param resolution
@@ -137,14 +137,14 @@ public class SignalAnalytics {
   }
 
   /**
-   * Route to get the technical Indicators for a symbol.
+   * Route to get the latest news.
    *
    * @param category
    * @param lastId
    * @return APIResponse
    * @throws Exception
    */
-  @GetMapping(value = "/sa/gettechnicalindicators", produces = "application/json")
+  @GetMapping(value = "/sa/getnews", produces = "application/json")
   public APIResponse getNews(@RequestParam String category, @RequestParam int lastId)
       throws Exception {
     logger.info(
