@@ -2,7 +2,6 @@ package com.consciousintelligentlabs.controller;
 
 import com.consciousintelligentlabs.dao.*;
 import com.consciousintelligentlabs.helper.*;
-import com.consciousintelligentlabs.helper.amqp.Consumer;
 import com.consciousintelligentlabs.helper.amqp.Producer;
 import com.consciousintelligentlabs.helper.amqp.RabbitMqConfig;
 import com.consciousintelligentlabs.service.NewsService;
@@ -56,7 +55,7 @@ public class SignalAnalytics {
    * @return APIResponse
    */
   @PostMapping(value = "/sa/receiveNotifications", produces = "application/json")
-  public APIResponse postNotifications(@RequestParam String notification) {
+  public APIResponse postNotifications(@RequestBody String notification) {
     logger.info(Constants.SAAPI_EVENT + Constants.NOTIFICATION_EVENT + " Received a notification.");
     APIResponse apiResponse;
     try {
@@ -65,13 +64,6 @@ public class SignalAnalytics {
           config.getNotificationRoutingKey(),
           config.getExchangeName(),
           config.getHostName());
-
-      Consumer.getMessages(
-          config.getQueueName(),
-          config.getNotificationRoutingKey(),
-          config.getExchangeName(),
-          config.getHostName(),
-          2);
 
       logger.info(
           Constants.SAAPI_EVENT
