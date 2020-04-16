@@ -10,6 +10,6 @@ public class SignalAnalyticsApiApplication {
   public static void main(String[] args) {
     SpringApplication.run(SignalAnalyticsApiApplication.class, args);
     // RabbitAMQP rabbit = new RabbitAMQP();
-    RabbitMqConfig rabbitMqConfig = new RabbitMqConfig();
+//    RabbitMqConfig rabbitMqConfig = new RabbitMqConfig();
   }
 }
