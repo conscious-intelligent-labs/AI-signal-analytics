@@ -38,8 +38,18 @@ public class MarketDataServiceImpl implements MarketDataService {
      * @return string
      */
     public String getEndpoint(String symbol, String timeframe, int count) {
-        return host + endpoint + "?token=" + token + "?symbol=" + exchanges + ":" + symbol + "&resolution=" +
-                timeframe + "&count=" + count;
+        return host +
+                endpoint +
+                "?token=" +
+                token +
+                "&symbol=" +
+                exchanges +
+                ":" +
+                symbol +
+                "&resolution=" +
+                timeframe +
+                "&count=" +
+                count;
     }
 
     /**
@@ -55,17 +65,14 @@ public class MarketDataServiceImpl implements MarketDataService {
     public APIResponse getMarketData(String symbol, String timeframe, int count) throws Exception {
         // Create response object.
         APIResponse APIResponse = new APIResponse();
-        HTTPClient client = new HTTPClient();
         String url = this.getEndpoint(symbol, timeframe, count);
 
         try {
             // Get Client.
             HTTPClient httpClient = new HTTPClient();
+            logger.info(Constants.MARKETDATA_EVENT + " url: " + url);
             httpClient.createGetClient(url);
             httpClient.sendGet();
-
-            // Send Get request.
-            client.sendGet();
 
             logger.info(Constants.MARKETDATA_EVENT + " Result returned: " + httpClient.getResult());
 

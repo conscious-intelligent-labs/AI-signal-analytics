@@ -47,7 +47,7 @@ public class TechnicalIndicatorServiceImpl implements TechnicalIndicatorService 
         + endpoint
         + "?token="
         + token
-        + "?symbol="
+        + "&symbol="
         + exchanges
         + ":"
         + symbol
