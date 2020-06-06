@@ -12,6 +12,7 @@ public class Constants {
   public static final String SUPPORT_AND_RESISTANCE_EVENT = "[SupportAndResistance]";
   public static final String TECHNICAL_INDICATOR_EVENT = "[TechnicalIndicator]";
   public static final String NEWS_EVENT = "[News]";
+  public static final String SCAN_EVENT = "[Scan]";
   public static final String MARKETDATA_EVENT = "[MarketData]";
   public static final String[] CHART_TIMEFRAMES = {
     "1", "5", "15", "30", "60", "240", "D", "W", "M"

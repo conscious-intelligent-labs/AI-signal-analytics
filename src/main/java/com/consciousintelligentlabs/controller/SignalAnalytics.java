@@ -30,6 +30,8 @@ public class SignalAnalytics {
 
   @Autowired private MarketDataService marketDataService;
 
+  @Autowired private ScanPatternService scanPatternService;
+
   Logger logger = LoggerFactory.getLogger(SignalAnalytics.class);
 
   /**
@@ -209,6 +211,29 @@ public class SignalAnalytics {
     return technicalIndicatorService.getSingleIndicatorData(indicator, symbol, resolution, Integer.parseInt(count), series_type);
   }
 
+  /**
+   * Route to get the latest pattern data for a symbol.
+   *
+   * @param symbol
+   * @param resolution
+   *
+   * @return APIResponse
+   * @throws Exception
+   */
+  @GetMapping(value = "/sa/getlatestpatternstatus", produces = "application/json")
+  public APIResponse getLatestPatternsStatus(
+          @RequestParam String symbol, @RequestParam String resolution) throws Exception {
+    logger.info(
+            Constants.SAAPI_EVENT
+                    + Constants.SCAN_EVENT
+                    + " Request to get Scan pattern data.");
+
+    if (this.isAcceptedTimeFrame(resolution) == false) {
+      return new APIResponse(HttpStatus.BAD_REQUEST, "Invalid resolution/timeframe provided. ");
+    }
+
+    return scanPatternService.getLatestPatterns(symbol, resolution);
+  }
 
   /**
    * Checks for accepted timeframe.
