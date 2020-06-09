@@ -41,7 +41,7 @@ public class SupportAndResistanceServiceImpl implements SupportAndResistanceServ
         + endpoint
         + "?token="
         + token
-        + "?symbol="
+        + "&symbol="
         + exchanges
         + ":"
         + symbol

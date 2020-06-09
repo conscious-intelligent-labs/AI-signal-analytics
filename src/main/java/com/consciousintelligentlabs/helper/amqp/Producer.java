@@ -7,6 +7,8 @@ import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.charset.StandardCharsets;
+
 public class Producer {
 
   /**
@@ -26,8 +28,8 @@ public class Producer {
     try (Connection connection = factory.newConnection();
         Channel channel = connection.createChannel()) {
       channel.exchangeDeclare(exchangeName, "topic", true);
-      channel.basicPublish(exchangeName, routingKey, null, message.getBytes("UTF-8"));
-      logger.trace(Constants.RABBITMQ_EVENT + " Sent '" + routingKey + "\n Message: " + message);
+      channel.basicPublish(exchangeName, routingKey, null, message.getBytes(StandardCharsets.UTF_8));
+      logger.info(Constants.RABBITMQ_EVENT + " Sent '" + routingKey + "\n Message: " + message);
     } catch (Exception e) {
       logger.error(
           Constants.RABBITMQ_EVENT
