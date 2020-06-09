@@ -4,12 +4,10 @@ import com.consciousintelligentlabs.dao.*;
 import com.consciousintelligentlabs.helper.*;
 import com.consciousintelligentlabs.helper.amqp.Producer;
 import com.consciousintelligentlabs.helper.amqp.RabbitMqConfig;
-import com.consciousintelligentlabs.service.NewsService;
-import com.consciousintelligentlabs.service.NotificationService;
-import com.consciousintelligentlabs.service.SupportAndResistanceService;
-import com.consciousintelligentlabs.service.TechnicalIndicatorService;
+import com.consciousintelligentlabs.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +27,10 @@ public class SignalAnalytics {
   @Autowired private TechnicalIndicatorService technicalIndicatorService;
 
   @Autowired private NewsService newsService;
+
+  @Autowired private MarketDataService marketDataService;
+
+  @Autowired private ScanPatternService scanPatternService;
 
   Logger logger = LoggerFactory.getLogger(SignalAnalytics.class);
 
@@ -54,7 +56,7 @@ public class SignalAnalytics {
    * @param notification The latest notifications.
    * @return APIResponse
    */
-  @PostMapping(value = "/sa/receiveNotifications", produces = "application/json")
+  @PostMapping(value = "/sa/receiveNotifications", produces = "application/json", consumes = MediaType.APPLICATION_JSON_VALUE)
   public APIResponse postNotifications(@RequestBody String notification) {
     logger.info(Constants.SAAPI_EVENT + Constants.NOTIFICATION_EVENT + " Received a notification.");
     APIResponse apiResponse;
@@ -113,7 +115,7 @@ public class SignalAnalytics {
    * @return APIResponse
    * @throws Exception
    */
-  @GetMapping(value = "/sa/gettechnicalindicators", produces = "application/json")
+  @GetMapping(value = "/sa/gettechnicalanalysis", produces = "application/json")
   public APIResponse getTechnicalIndicators(
       @RequestParam String symbol, @RequestParam String resolution) throws Exception {
     logger.info(
@@ -125,7 +127,7 @@ public class SignalAnalytics {
       return new APIResponse(HttpStatus.BAD_REQUEST, "Invalid resolution/timeframe provided. ");
     }
 
-    return technicalIndicatorService.getTechnicalIndicatorService(symbol, resolution);
+    return technicalIndicatorService.getTechnicalIndicatorData(symbol, resolution);
   }
 
   /**
@@ -151,6 +153,86 @@ public class SignalAnalytics {
     }
 
     return newsService.getNewsByLastId(category, lastId);
+  }
+
+  /**
+   * Route to get the market data for a symbol.
+   *
+   * @param symbol
+   * @param resolution
+   * @param count
+   *
+   * @return APIResponse
+   * @throws Exception
+   */
+  @GetMapping(value = "/sa/getmarketdata", produces = "application/json")
+  public APIResponse getMarketData(
+          @RequestParam String symbol, @RequestParam String resolution, @RequestParam String count) throws Exception {
+    logger.info(
+            Constants.SAAPI_EVENT
+                    + Constants.TECHNICAL_INDICATOR_EVENT
+                    + " Request to get market data.");
+
+    if (this.isAcceptedTimeFrame(resolution) == false) {
+      return new APIResponse(HttpStatus.BAD_REQUEST, "Invalid resolution/timeframe provided. ");
+    }
+
+    return marketDataService.getMarketData(symbol, resolution, Integer.parseInt(count));
+  }
+
+  /**
+   * Route to get single indicator for a symbol.
+   *
+   * @param indicator  Indicator to use.
+   * @param symbol     Symbol.
+   * @param resolution Timeframe of chart.
+   * @param count      Number of candles to return.
+   *
+   * @return
+   * @throws Exception
+   */
+  @GetMapping(value = "/sa/getsingleindicator", produces = "application/json")
+  public APIResponse getSingleIndicator(
+          @RequestParam String indicator,
+          @RequestParam String symbol,
+          @RequestParam String resolution,
+          @RequestParam String count,
+          @RequestParam String series_type
+          ) throws Exception {
+    logger.info(
+            Constants.SAAPI_EVENT
+                    + Constants.TECHNICAL_INDICATOR_EVENT
+                    + " Request to get indicator data.");
+
+    if (this.isAcceptedTimeFrame(resolution) == false) {
+      return new APIResponse(HttpStatus.BAD_REQUEST, "Invalid resolution/timeframe provided. ");
+    }
+
+    return technicalIndicatorService.getSingleIndicatorData(indicator, symbol, resolution, Integer.parseInt(count), series_type);
+  }
+
+  /**
+   * Route to get the latest pattern data for a symbol.
+   *
+   * @param symbol
+   * @param resolution
+   *
+   * @return APIResponse
+   * @throws Exception
+   */
+  @GetMapping(value = "/sa/getlatestpatternstatus", produces = "application/json")
+  public APIResponse getLatestPatternsStatus(
+          @RequestParam String symbol, @RequestParam String resolution) throws Exception {
+    logger.info(
+            Constants.SAAPI_EVENT
+                    + Constants.SCAN_EVENT
+                    + " Request to get Scan pattern data.");
+
+    if (this.isAcceptedTimeFrame(resolution) == false) {
+      return new APIResponse(HttpStatus.BAD_REQUEST, "Invalid resolution/timeframe provided. ");
+    }
+
+    return scanPatternService.getLatestPatterns(symbol, resolution);
   }
 
   /**
