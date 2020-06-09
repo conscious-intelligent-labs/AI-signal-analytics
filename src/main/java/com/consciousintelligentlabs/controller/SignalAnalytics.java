@@ -115,7 +115,7 @@ public class SignalAnalytics {
    * @return APIResponse
    * @throws Exception
    */
-  @GetMapping(value = "/sa/gettechnicalindicators", produces = "application/json")
+  @GetMapping(value = "/sa/gettechnicalanalysis", produces = "application/json")
   public APIResponse getTechnicalIndicators(
       @RequestParam String symbol, @RequestParam String resolution) throws Exception {
     logger.info(
