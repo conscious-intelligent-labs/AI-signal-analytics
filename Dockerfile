@@ -24,6 +24,7 @@ VOLUME /tmp
 ADD target target
 WORKDIR /target
 COPY target .
+RUN true
 ADD entry.sh /target
 ENV PATH=/target:$PATH
 
